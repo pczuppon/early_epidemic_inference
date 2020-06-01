@@ -1,0 +1,21 @@
+\documentclass{standalone}
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz} 
+\usetikzlibrary{arrows, decorations.markings,decorations.pathreplacing,angles,quotes}
+\usepackage{microtype}
+\usepackage{fourier}
+
+\definecolor{nblue}{RGB}{31, 119, 180}
+
+\begin{document}
+
+\begin{tikzpicture}
+	\node[anchor=south west,inner sep=0] (Bild) at (0,0) {\includegraphics[scale=0.39]{hosp_time_poisson_blank.pdf}};
+   		\begin{scope}[x=(Bild.south east),y=(Bild.north west)]
+        	\draw (0.5,-0.035) node {first hospitalization time $\widetilde{T}_{\text{hosp}}$};
+        	\draw (-0.04,0.5) node [rotate=90] {probability density};		
+    	\end{scope}
+\end{tikzpicture}
+
+\end{document}
