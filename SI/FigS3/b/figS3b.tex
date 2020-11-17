@@ -1,0 +1,33 @@
+\documentclass{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz} 
+\usetikzlibrary{arrows, decorations.markings,decorations.pathreplacing,angles,quotes}
+\usepackage{microtype}
+\usepackage{fourier}
+
+\definecolor{np}{rgb}{0.5, 0, 0.5}
+\definecolor{nb}{RGB}{31,119,180}
+\definecolor{no}{RGB}{255,127,14}
+\definecolor{ng}{rgb}{0,0.5,0}
+
+%include other needed packages here   
+\begin{document}
+
+\begin{tikzpicture}
+% include your tikz code here
+    		\node[anchor=south west,inner sep=0] (Bild) at (0,0) {\includegraphics[scale=0.39]{figS3b_blank.pdf}};
+   		\begin{scope}[x=(Bild.south east),y=(Bild.north west)]
+        	\draw (0.55,-0.035) node {epidemic size at $T_{\text{hosp}}$};
+        	\draw (-0.03,0.5) node [rotate=90] {probability density};
+        	%\draw[color = no, very thick] (0.575,0.78) -- node[right=6pt] {\color{black} \small Eq. (10)} (0.625,0.78);
+        	%\draw[color = no, very thick,dashed] (0.575,0.675) -- (0.625,0.675);
+        	%\draw (0.6,0.7) node[right=6pt] {\color{black} \small analytical};
+        	%\draw (0.6,0.65) node[right=6pt] {\small mean};
+        	%\draw[color = no, very thick,dotted] (0.575,0.545) -- (0.625,0.545);
+        	%\draw (0.6,0.57) node[right=6pt] {\color{black} \small simulation};
+        	%\draw (0.6,0.52) node[right=6pt] {\small mean};
+    		\end{scope}
+\end{tikzpicture}
+
+\end{document}
