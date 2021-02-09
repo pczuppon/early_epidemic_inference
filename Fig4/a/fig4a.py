@@ -65,13 +65,13 @@ hosp_time_dist = np.zeros(len(t))
 for k in range(200):            ### sum over geometric distribution
     
     # determine deterministic hitting time of k infected individuals
-    tdet = np.log(k*alpha*beta*p_surv)/alpha
+    tdet = np.log((k+1)*alpha*beta*p_surv)/alpha
     
     if (tdet <= 0): tdet = 0
     
     # add hospitalisation time distribution to tdet
     index = int(tdet/dt)
-    hosp_time_dist[index:] += geom.pmf(k,p_hosp) * gamma.pdf(t[0:(len(t)-index)],shape_hosp,scale = scale_hosp)
+    hosp_time_dist[index:] += geom.pmf(k+1,p_hosp) * gamma.pdf(t[0:(len(t)-index)],shape_hosp,scale = scale_hosp)
   
 
 ################################

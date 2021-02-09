@@ -25,19 +25,70 @@ R0 = 1.3
 def ext(x):
     return(x-np.exp(R0*(x-1)))
 
-p_ext = fsolve(ext,0.5)
-p_surv = 1 - p_ext[0]
+p_ext = fsolve(ext,0.5)[0]
+p_surv = 1 - p_ext
 
 ####### prediction
 alpha = 0.0486829    # Mathematica solution!
 beta = 5.28354      # Mathematica solution!
 I_plot =  []
 dt = 0.01
+da = 0.01
 tfin = 80
 t = np.arange(0,tfin+dt,dt)
 
 for i in range(len(t)):
     I_plot.append( np.exp(alpha*t[i]) / (alpha*beta*p_surv))
+
+
+############### McKendrick-von Foerster approach
+###### age dependent survival probability
+pext = [p_ext]
+x = dt
+for i in range(int(tfin/dt)):
+    pext.append(p_ext*np.exp((1-p_ext)*R0*gamma.cdf(x,shape_inf,scale=scale_inf)))
+    x += dt
+
+pext = np.asarray(pext)
+
+
+##### PDE solution
+fx = np.zeros((int(tfin/dt)+1,int(tfin/dt)+1))
+
+tot = [1]
+
+# initialize with 1 individual at time 0 with age 0
+fx[0,0] = 1
+k = 2
+mu_adj = (1+pext[0])
+inf_times = [0]
+
+# infectiousness vector
+mu = []
+x = 0
+for i in range(int(tfin/dt)+1):
+    mu.append(R0*(gamma.pdf(x+dt/2, shape_inf, scale=scale_inf)))
+    x = x + dt
+
+mu = np.asarray(mu)
+
+for i in range(int(tfin/dt)):
+    # move up age
+    fx[i+1,1:] = fx[i,0:-1]
+    
+    # add infections
+    # adjusted mu
+    if (tot[-1] >= k):
+        prod = 1
+        for j in range(len(inf_times)):
+            prod = pext[i-inf_times[j]]*prod
+        
+        inf_times.append(i)
+        mu_adj = (1- pext[0] * prod)/(1-prod)
+        k += 1    
+        
+    fx[i+1,0] = np.sum(da*mu*mu_adj*fx[i,:])
+    tot.append(np.sum(fx[i+1,:]))
 
 ################################
 ################################ Import Data 
@@ -69,12 +120,9 @@ for i in range(len(time)):
 time = np.arange(0,80+1,1)
 
 plt.semilogy(time,means[0:len(time)],'o',color='C0')
-plt.semilogy(t,I_plot,color='C0',linewidth=3)
-#plt.plot(t_det,inf_det/p_surv,linewidth=3)
-#plt.plot(t,inf,linewidth = 3, color ='C0')
-#plt.plot(time,low,color='C0',linewidth=3,alpha=0.5)/p_surv
-#plt.plot(time,up,color='C0',linewidth=3,alpha=0.5)
-plt.ylim((0,5*1000))
+plt.plot(t,I_plot,color='C0',linewidth=3)
+plt.plot(t,tot,color='black',linewidth=3)
+plt.ylim((0,1000))
 plt.xlim((0,80))
 plt.fill_between(time,low[0:len(time)],up[0:len(time)],alpha=0.25,color='C0')
 plt.tick_params(axis='both', which='major', labelsize=15, width=1, length=10)
